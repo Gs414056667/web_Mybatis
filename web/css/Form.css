@@ -1,0 +1,35 @@
+body{
+    background-color: RGB(249,249,250);
+}
+
+.btn{
+    width:150px;
+    height:30px;
+    border-radius:5px;
+    background-color:#E1E1E1;
+    color:black;
+    margin-left:auto;
+    margin-top: 3px;
+}
+.btn:hover{
+    background-color: #F9F9FA;
+}
+td{
+    height: 40px;
+}
+.fxk{
+    width: 2%;
+    height: 30%;
+}
+td input{
+    border:none;
+    width:98%;
+    height: 100%;
+    background-color: transparent;
+}
+td textarea{
+    border: none;
+    width: 98%;
+    height: 100%;
+    background-color: transparent;
+}

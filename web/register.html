@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>注册界面</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="all,follow">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/4.2.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,700">
+    <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet">
+</head>
+<body>
+<div class="page login-page">
+    <div class="container d-flex align-items-center">
+        <div class="form-holder has-shadow">
+            <div class="row">
+                <!-- Logo & Information Panel-->
+                <div class="col-lg-6">
+                    <div class="info d-flex align-items-center">
+                        <div class="content">
+                            <div class="logo">
+                                <h1>欢迎注册</h1>
+                            </div>
+                            <p>河北省科技信息通用调查系统</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Form Panel    -->
+                <div class="col-lg-6 bg-white">
+                    <div class="form d-flex align-items-center">
+                        <div class="content">
+                            <div class="form-group">
+                                <input id="register-inst" class="input-material" type="text" name="registerinst" placeholder="输入机构名称"   >
+                                <div class="invalid-feedback">
+                                    此机构已经注册
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input id="register-username" class="input-material" type="text" name="registerUsername" placeholder="请输入用户名/姓名" >
+                                <div class="invalid-feedback">
+                                    用户名已经存在了
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input id="register-em" class="input-material" type="text" name="registerem" placeholder="输入邮政编码"   >
+                                <div class="invalid-feedback">
+                                    邮政编码不正确
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input id="register-instcode" class="input-material" type="text" name="registerinstcode" placeholder="输入机构编码"   >
+                                <div class="invalid-feedback">
+                                    机构编码已经存在
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input id="register-password" class="input-material" type="password" name="registerPassword" placeholder="请输入密码"   >
+                                <div class="invalid-feedback">
+                                    密码必须在6~10位之间
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input id="register-passwords" class="input-material" type="password" name="registerPasswords" placeholder="确认密码"   >
+                                <div class="invalid-feedback">
+                                    两次密码必须相同 且在6~10位之间
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button id="regbtn" type="button" name="registerSubmit" class="btn btn-primary">注册</button>
+                            </div>
+                            <small>已有账号?</small><a href="index.html" class="signup">&nbsp;登录</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- JavaScript files-->
+<script src="https://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.2.1/bootstrap.min.js"></script>
+<script>
+    $(function(){
+        /*错误class  form-control is-invalid
+        正确class  form-control is-valid*/
+        var flagName=false;
+        var flaginst = false;
+        var flagpass=false;
+        var flagrepass = false;
+        var flagem = false;
+        var flaginstcode = false;
+        /*验证用户名*/
+        var name,password,repassword,inst,em,instcode;
+        $("#register-username").change(function(){
+            name=$("#register-username").val();
+            /*ajax判断用户名是否存在*/
+            if (window.XMLHttpRequest) {
+                // IE7+, Firefox, Chrome, Opera, Safari 浏览器执行的代码
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                //IE6, IE5 浏览器执行的代码
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    if (xmlhttp.responseText == "yes") {
+                        $("#register-username").removeClass("form-control is-valid")
+                        $("#register-username").addClass("form-control is-invalid");
+                        flagName = false;
+                    }else{
+                        /*用户名格式判断*/
+                        if(name.length<2||name.length>10){
+                            alert("用户名必须在2~10位之间");
+                            flagName=false;
+                        }else{
+                            $("#register-username").removeClass("form-control is-invalid")
+                            $("#register-username").addClass("form-control is-valid");
+                            flagName=true;
+                        }
+                    }
+                }
+            }
+            xmlhttp.open("POST", "check_name?username=" + name, true);
+            xmlhttp.send();
+
+        })
+        //验证邮政编码
+        $("#register-em").change(function(){
+              em=$("#register-em").val();
+              var reg = /\d{6}/;
+            if(!reg.test(em)){
+                $("#register-em").removeClass("form-control is-valid")
+                $("#register-em").addClass("form-control is-invalid");
+                flagem=false;
+            }else{
+                $("#register-em").removeClass("form-control is-invalid")
+                $("#register-em").addClass("form-control is-valid");
+                flagem=true;
+            }
+        })
+        //验证机构编码
+        $("#register-instcode").change(function(){
+            instcode = $("#register-instcode").val();
+            /*ajax判断用户名是否存在*/
+            if (window.XMLHttpRequest) {
+                // IE7+, Firefox, Chrome, Opera, Safari 浏览器执行的代码
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                //IE6, IE5 浏览器执行的代码
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    if (xmlhttp.responseText == "yes") {
+                        $("#register-instcode").removeClass("form-control is-valid")
+                        $("#register-instcode").addClass("form-control is-invalid");
+                        flaginstcode = false;
+                    }else{
+                        /*用户名格式判断*/
+                        $("#register-instcode").removeClass("form-control is-invalid")
+                        $("#register-instcode").addClass("form-control is-valid");
+                        flaginstcode=true;
+                    }
+                }
+            }
+            xmlhttp.open("POST", "check_instcode?instcode=" + instcode, true);
+            xmlhttp.send();
+        })
+
+        /*验证密码*/
+        $("#register-password").change(function(){
+            password=$("#register-password").val();
+            if(password.length<6||password.length>18){
+                $("#register-password").removeClass("form-control is-valid")
+                $("#register-password").addClass("form-control is-invalid");
+                flagpass=false;
+            }else{
+                $("#register-password").removeClass("form-control is-invalid")
+                $("#register-password").addClass("form-control is-valid");
+                flagpass=true;
+            }
+        })
+        /*验证确认密码*/
+        $("#register-passwords").change(function(){
+            repassword=$("#register-passwords").val();
+            if((password!=repassword)||(password.length<6||repassword.length>18)){
+                $("#register-passwords").removeClass("form-control is-valid")
+                $("#register-passwords").addClass("form-control is-invalid");
+                flagrepass=false;
+            }else{
+                $("#register-passwords").removeClass("form-control is-invalid")
+                $("#register-passwords").addClass("form-control is-valid");
+                flagrepass=true;
+            }
+        })
+        /*
+        验证机构名称
+         */
+        $("#register-inst").change(function () {
+            inst=$("#register-inst").val();
+            /*ajax判断机构名是否存在*/
+            if (window.XMLHttpRequest) {
+                // IE7+, Firefox, Chrome, Opera, Safari 浏览器执行的代码
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                //IE6, IE5 浏览器执行的代码
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    if (xmlhttp.responseText == "yes") {
+                        $("#register-inst").removeClass("form-control is-valid")
+                        $("#register-inst").addClass("form-control is-invalid");
+                        flaginst=false;
+                    }else{
+                        /*用户名格式判断*/
+                            $("#register-inst").removeClass("form-control is-invalid")
+                            $("#register-inst").addClass("form-control is-valid");
+                            flaginst=true;
+                    }
+                }
+            }
+            xmlhttp.open("POST", "check_inst?inst=" + inst, true);
+            xmlhttp.send();
+
+
+        })
+        $("#regbtn").click(function(){
+            if(flaginst&&flagName&&flagpass&&flagrepass&&flagem&&flaginstcode){
+                localStorage.setItem("name",name);
+                localStorage.setItem("password",password);
+                $.ajax({
+                    url:"register",
+                    data:{"username":name,"password":password,"inst":inst,"status":1,"permission":0,"job":"普通用户","em":em,"instcode":instcode},//前面命名，后面是值
+                    success: function(data){
+                        if(data=="yes")
+                        {
+                            alert("注册成功！");
+                            location.href="index.html";
+                        }
+                        else
+                        {
+                            alert("注册失败！");
+                        }
+                    },
+                    error:function (e) {
+                        console.log(e);
+                        alert("出错了");
+                    }
+                })
+            }else{
+                if(!flagName){
+                    $("#register-username").addClass("form-control is-invalid");
+                }
+                if(!flagpass){
+                    $("#register-password").addClass("form-control is-invalid");
+                }
+                if(!flagrepass){
+                    $("#register-passwords").addClass("form-control is-invalid");
+                }
+                if(!flaginst){
+                    $("#register-inst").addClass("form-control is-invalid");
+                }
+                if(!flaginstcode){
+                    $("#register-instcode").addClass("form-control is-invalid");
+                }
+            }
+        })
+    })
+</script>
+</body>
+</html>

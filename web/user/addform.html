@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>欢迎光临</title>
+    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/4.2.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,700">
+
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/zTree.v3/3.5.33/js/jquery.ztree.core.min.js"></script>
+    <link href="https://cdn.bootcss.com/zTree.v3/3.5.33/css/zTreeStyle/zTreeStyle.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/Form.css" id="theme-stylesheet">
+</head>
+<style>
+    #qsxqnx {
+        text-align: center;
+    }
+    #jzxqnx{
+        text-align: center;
+    }
+    body
+    {
+        margin:0;padding:0;background:url(../resource/img/background.png);
+    }
+</style>
+
+<script>
+    var flag;
+    function yjlx() {
+        $("input[name='kjhdlx']:checkbox").each(function(){
+            $(this).click(function(){
+                if($(this).prop('checked')){
+                    $('input[name="kjhdlx"]').prop('checked',false);
+                    $(this).prop('checked',true);
+                }
+            });
+            var val = $('input[name="kjhdlx"]:checked').val();//获取选中的单选的值
+
+            if(val == "基础研究"){
+                flag = 0;
+                var text = "<td align=\"center\">学科分类</td>\n" +
+                    "        <td colspan=\"2\" >\n" +
+                    "            <ul id=\"tree\" class=\"ztree\" style=\"width:320px;border: #6c757d solid 1px; overflow:auto;\"></ul></td>" +
+                    "<td colspan='2' align='center'><input type=\"text\" id = \"xkfl\" style='text-align: center' readonly>\n" +
+                    "        </td>";
+                $("#tr_xkfl").html(text);
+                $("#tr_xqjsyyhy").empty();
+                $("#tr_qtjssm").empty();
+                $("#xkfl").attr('disabled', false);
+                var obj=document.getElementsByName("xqjs");
+                for(i=0;i<obj.length;i++){
+                    obj[i].disabled=true;
+                    obj[i].checked=false;
+                }
+                $("#xqjsyyhy").attr("disabled",true);
+                $("#xqjsyyhy").val("");
+
+                //加载学科分类树
+                var zTreeObj,
+                    setting = {
+                        view: {
+                            selectedMulti: false
+                        }
+                        ,callback: {
+                            onClick: zTreeOnClick
+                        }
+                    },
+                    zTreeNodes = [
+                        {"name":"学科分类",id:0, open:false, children: [
+                                { "name":"一级学科", id:1, children: [
+                                        {"name":"哲学",id:11},
+                                        {"name":"逻辑学",id:12},
+                                        {"name":"宗教学",id:13}
+                                    ]
+                                },
+                                { "name":"二级学科", id:2, children:[
+                                        {"name":"经济学",id:21},
+                                        {"name":"统计学",id:22},
+                                        {"name":"财政学",id:23},
+                                        {"name":"税收学",id:24},
+                                        {"name":"金融学",id:25},
+                                        {"name":"金融工程学",id:26}
+                                    ]},
+                                { "name":"三级学科", id:3, children:[
+                                        {"name":"政治学",id:31},
+                                        {"name":"行政学",id:32},
+                                        {"name":"国际政治学",id:33},
+                                        {"name":"社会学",id:34},
+                                        {"name":"社会工作学",id:35},
+                                        {"name":"社会科学",id:36}
+                                    ]}
+                            ]
+                        }
+                    ];
+                function zTreeOnClick(event, treeId, treeNode) {
+                    if(treeNode.children==null)
+                        $("#xkfl").val(treeNode.name);
+                };
+
+                $(document).ready(function(){
+                    zTreeObj = $.fn.zTree.init($("#tree"), setting, zTreeNodes);
+                });
+            }else{
+                flag = 1;
+                var text_xqjsyyhy = "<td align=\"center\">需求技术\n" +
+                    "            应用行业</td>\n" +
+                    "        <td colspan=\"2\" ><ul id=\"tree_xqjsyyhy\" class=\"ztree\" style=\"width:300px;border: #0f9ae0 solid 1px; overflow:auto;\"></ul></td>\n" +
+                    "        <td colspan=\"2\" align='center'><input type=\"text\" placeholder=\"（非基础研究填写）\" style='text-align: center' id = \"xqjsyyhy\" readonly></td>";
+                $("#tr_xqjsyyhy").html(text_xqjsyyhy);
+                //加载应用行业树
+                var zTreeObj2,
+                    setting2 = {
+                        view: {
+                            selectedMulti: false
+                        }
+                        ,callback: {
+                            onClick: zTreeOnClick
+                        }
+                    },
+                    zTreeNodes2 = [
+                        {"name":"国民经济行业分类",id:0, open:false, children: [
+                                { "name":"农业", id:1, children: [
+                                        {"name":"谷物种植",id:11},
+                                        {"name":"豆类种植",id:12},
+                                        {"name":"烟草种植",id:13}
+                                    ]
+                                },
+                                { "name":"林业", id:2, children:[
+                                        {"name":"林木育种和育苗",id:21},
+                                        {"name":"造林和更新",id:22},
+                                        {"name":"木材和竹材采运",id:23},
+                                        {"name":"林产品采集",id:24,children:[
+                                                {"name":"木竹材林产品采集",id:241},
+                                                {"name":"非木竹材林产品采集",id:242}
+                                            ]}
+
+                                    ]},
+                                { "name":"畜牧业", id:3, children:[
+                                        {"name":"牲畜饲养",id:31},
+                                        {"name":"家禽饲养",id:32},
+                                        {"name":"狩猎和捕捉动物",id:33},
+                                        {"name":"其他畜牧业",id:34}
+                                    ]}
+                            ]
+                        }
+                    ];
+                function zTreeOnClick(event, treeId, treeNode) {
+                    if(treeNode.children==null)
+                        $("#xqjsyyhy").val(treeNode.name);
+                };
+
+                $(document).ready(function(){
+                    zTreeObj2 = $.fn.zTree.init($("#tree_xqjsyyhy"), setting2, zTreeNodes2);
+
+                });
+
+                $("#tr_xkfl").empty();
+                $("#xqjsyyhy").attr('disabled', false);
+                var obj = document.getElementsByName("xqjs");
+                for (i = 0; i < obj.length; i++) {
+                    obj[i].disabled = false;
+                }
+            }
+        });
+    }
+    function jgsx() {
+        $("input[name='jgsx']:checkbox").each(function(){
+            $(this).click(function(){
+                if($(this).prop('checked')){
+                    $('input[name="jgsx"]').prop('checked',false);
+                    $(this).prop('checked',true);
+                }
+            });
+
+        });
+    }
+    function jsxq() {
+        $("input[name='jsxq']:checkbox").each(function(){
+            $(this).click(function(){
+                if($(this).prop('checked')){
+                    $('input[name="jsxq"]').prop('checked',false);
+                    $(this).prop('checked',true);
+                }
+            });
+
+        });
+
+    }
+    var gjzs = "";
+    function gjz() {
+        var gjz1 = $('#gjz1').val();
+        var gjz2 = $('#gjz2').val();
+        var gjz3 = $('#gjz3').val();
+        var gjz4 = $('#gjz4').val();
+        var gjz5 = $('#gjz5').val();
+        if(gjz1!="")
+        {
+            $('#gjz2').removeAttr("readonly");
+            gjzs+=gjz1;
+        }
+        else
+        {
+            $('#gjz2').attr("readonly",true);
+            $('#gjz2').val("");
+            gjzs="";
+        }
+        if(gjz2!="")
+        {
+            $('#gjz3').removeAttr("readonly");
+            gjzs+=gjz2;
+        }else
+        {
+            $('#gjz3').attr("readonly",true);
+            $('#gjz3').val("");
+            gjzs=gjz1;
+        }
+        if(gjz3!="")
+        {
+            $('#gjz4').removeAttr("readonly");
+            gjzs+=gjz3;
+        }else
+        {
+            $('#gjz4').attr("readonly",true);
+            gjzs=gjz1+gjz2;
+        }
+        if(gjz4!="")
+        {
+            $('#gjz5').removeAttr("readonly");
+            gjzs+=gjz4;
+        }else
+        {
+            $('#gjz5').attr("readonly",true);
+            gjzs=gjz1+gjz2+gjz5;
+        }
+    }
+
+
+</script>
+<body>
+<table border="1px" cellspacing="0" align="center" width="900"  height="50"  >
+    <tr align="center">
+        <td width="200">机构全称</td>
+        <td width="200"><input type="text" id = "jgmc" placeholder="请填写单位全称"  ></td>
+        <td width="200">表格编号</td>
+        <td  colspan="2"><input type="text" id = "Code" readonly="readonly"></td>
+    </tr>
+    <tr align="center">
+        <td width="200">通讯地址</td>
+        <td colspan="1"><input type="text" id = "txdz" ></td>
+        <td>所在地域</td>
+        <td colspan="2"><input type="text" id="szdy"> </td>
+    </tr>
+
+    <tr align="center">
+        <td width="200">网&nbsp;&nbsp;&nbsp;&nbsp;址</td>
+        <td width="200" ><input type="text" id = "dwwz" ></td>
+        <td width="200">电子信箱</td>
+        <td width="200" colspan="2"><input type="text"  id="dzxx" ></td>
+    </tr>
+
+    <tr align="center">
+        <td width="200">法人代表</td>
+        <td width="200"><input type="text" id = "frdb" ></td>
+        <td width="200">邮政编码</td>
+        <td width="200"  colspan="2"><input type="text" id = "em" ></td>
+    </tr>
+
+    <tr  >
+        <td rowspan="1" align="center">联系人</td>
+        <td width="20" rowspan="1" ><input type="text" id = "lxr" ></td>
+        <td width="150" align="center">固定电话</td>
+        <td colspan="2" ><input type="text" id = "gd"  > </td>
+    </tr>
+
+    <tr align="center">
+        <td>手&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;机</td>
+        <td> <input type="text" id = "sj"  ></td>
+        <td >传&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;真</td>
+        <td colspan="2"><input type="text" id = "cz" ></td>
+    </tr>
+
+    <tr >
+        <td align="center">机构属性</td>
+        <td colspan="4">
+            <input type="checkbox" class="fxk" name="jgsx"  id="qy" value="企业" onchange="jgsx()"/><label for="qy">企业</label>
+            <input type="checkbox" class="fxk" name="jgsx"  id="gdyx" value="高等院校" onchange="jgsx()"/><label for="gdyx">高等院校</label>
+            <input type="checkbox" class="fxk" name="jgsx"  id="yjjg" value="研究机构" onchange="jgsx()"/><label for="yjjg">研究机构</label>
+            <input type="checkbox" class="fxk" name="jgsx"  id="qt" value="其他" onchange="jgsx()"/><label for="qt">其他</label>
+        </td>
+    </tr>
+    <tr align="center">
+        <td colspan="5" height="150"><textarea  style="width: 800px;height: 150px;" border="1px" placeholder="机构简介（主要包括基本情况、现有研究基础等，限500字以内）" id = "jgjj"></textarea></td>
+    </tr>
+    <tr align="center">
+        <td height="50px">技术需求名称</td>
+        <td colspan="1"><input type="text" id = "jsxq" ></td>
+        <td>需求年限</td>
+        <td colspan="2"><input type="text" style="width: 36%" id ="qsxqnx">年&nbsp;&nbsp;——&nbsp;&nbsp;<input type="text" style="width: 36%" id ="jzxqnx">年</td>
+    </tr>
+    <tr align="center">
+        <td  height="180" rowspan="4">技术需求概述</td>
+    </tr>
+
+    <tr>
+        <td colspan="4"><textarea id = "zywt" style="height: 90px" placeholder="1、主要问题（需要解决的重大技术问题，限500字以内）"></textarea></td>
+    </tr>
+
+    <tr>
+        <td colspan="4"><textarea id = "jsgj" style="height: 90px" placeholder="2、技术关键（所需的关键技术、主要指标，限500字以内）"></textarea></td>
+    </tr>
+
+    <tr>
+        <td colspan="4"><textarea id = "yqmb" style="height: 90px" placeholder="3、预期目标（技术创新性、经济社会效益，限500字以内）"></textarea></td>
+    </tr>
+
+    <tr>
+        <td align="center" >关键字:</td>
+        <td colspan="4">
+            <input type="text" class="gjz" id = "gjz1" onchange="gjz()" style="width: 19%;">
+            <input type="text" class="gjz" id = "gjz2" onchange="gjz()" style="width: 20%;border-left: 1px dashed gray" readonly>
+            <input type="text" class="gjz" id = "gjz3" onchange="gjz()" style="width: 19%;border-left: 1px dashed grey" readonly>
+            <input type="text" class="gjz" id = "gjz4" onchange="gjz()" style="width: 20%;border-left: 1px dashed gray" readonly>
+            <input type="text" class="gjz" id = "gjz5" onchange="gjz()" style="width: 19%;border-left: 1px dashed grey" readonly>
+        </td>
+    </tr>
+
+    <tr>
+        <td>拟投入资金总额:</td>
+        <td colspan="4">
+            <input type="text" id="ntrzj" style="width: 30%">万元
+        </td>
+    </tr>
+    <tr >
+        <td  width="200" align="center" rowspan="2">技术需求 解决方式</td>
+<!--        原来的技术需求合作模式-->
+        <td colspan="4" width="500" id ="tr_jsxq">
+            <input type="checkbox" name ="jsxq" class="fxk" id="dlkf" value="独立开发" onchange="jsxq()" /><label for="dlkf">独立开发    </label>
+            <input type="checkbox" name ="jsxq" class="fxk" id="jszr" value="技术转让" onchange="jsxq()"/><label for="jszr">技术转让   </label>
+            <input type="checkbox" name ="jsxq" class="fxk" id="jsrg" value="技术入股" onchange="jsxq()"/><label for="jsrg">技术入股    </label>
+            <input type="checkbox" name ="jsxq" class="fxk" id="hzkf" value="合作开发" onchange="jsxq()"/><label for="hzkf">合作开发    </label>
+            <input type="checkbox" name ="jsxq" class="fxk" id="qtjsxq" value="其他" onchange="jsxq()"/><label for="qtjsxq">其他</label>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4" >合作意向单位:<input type="text" id = "yxdw" style="width: 35%; border-bottom:1px solid black ">(选填)</td>
+    </tr>
+    <tr >
+        <td  height="50px" align="center">科技活动类型</td>
+        <td colspan="4" >
+            <input type="checkbox"  class="fxk" name="kjhdlx" id="jcyj" value="基础研究"  onchange="yjlx()"  /><label for="jcyj">基础研究    </label>
+            <input type="checkbox" class="fxk" name="kjhdlx" id="yyyj" value="应用研究" onchange="yjlx()"/><label for="yyyj">应用研究   </label>
+            <input type="checkbox" class="fxk" name="kjhdlx" id="syfz" value="试验发展" onchange="yjlx()"/><label for="syfz">试验发展    </label>
+            <input type="checkbox" class="fxk" name="kjhdlx" id="yjfz" value="研究发展与成果应用" onchange="yjlx()"/><label for="yjfz">研究发展与成果应用    </label>
+            <input type="checkbox" class="fxk" name="kjhdlx" id="jstg" value="技术推广与科技服务" onchange="yjlx()"/><label for="jstg">技术推广与科技服务</label>
+            <input type="checkbox" class="fxk" name="kjhdlx" id="scxhd" value="生产性活动" onchange="yjlx()"/><label for="scxhd">生产性活动</label>
+        </td>
+    </tr>
+    <tr align="center" id = "tr_xkfl">
+<!--        <td  height="50px" align="center">学科分类</td>-->
+<!--        <td colspan="4" >-->
+<!--            <input type="text" id = "xkfl">-->
+<!--        </td>-->
+    </tr>
+    <tr >
+        <td height="80px" align="center">需求技术
+                        所属领域
+                     （非基础研究填写）</td>
+        <td colspan="4">
+            <input type="checkbox" class="fxk" name = "xqjs" id="dzxxjs" value="电子信息技术" /><label for="dzxxjs">电子信息技术    </label>
+            <input type="checkbox" class="fxk" name = "xqjs" id="gjdyth" value="光机电一体化" /><label for="gjdyth">光机电一体化   </label>
+            <input type="checkbox" class="fxk" name = "xqjs" id="rj" value="软件" /><label for="rj">软件    </label>
+            <input type="checkbox" class="fxk" name = "xqjs" id="swzyjs" value="生物制药技术" /><label for="swzyjs">生物制药技术    </label>
+            <input type="checkbox" class="fxk" name = "xqjs" id="xcl" value="新材料及应用技术" /><label for="xcl">新材料及应用技术</label>
+            <input type="checkbox" class="fxk" name = "xqjs" id="xjzzjs" value="先进制造技术" /><label for="xjzzjs">先进制造技术    </label><br />
+            <input type="checkbox" class="fxk" name = "xqjs" id="xdnyjs" value="现代农业技术" /><label for="xdnyjs">现代农业技术   </label>
+            <input type="checkbox" class="fxk" name = "xqjs" id="xny" value="新能源与高效节能技术" /><label for="xny">新能源与高效节能技术    </label>
+            <input type="checkbox" class="fxk" name = "xqjs" id="zy" value="资源与环境保护新技术" /><label for="zy">资源与环境保护新技术    </label>
+            <input type="checkbox" class="fxk" name = "xqjs" id="qtjs" value="其他技术" /><label for="qtjs">其他技术</label>
+        </td>
+    </tr>
+    <tr align="center" id = "tr_qtjssm">
+
+    </tr>
+<!--    <tr align="center" >-->
+<!--        <td >需求技术-->
+<!--                        应用行业</td>-->
+<!--        <td colspan="4" height="100"><input type="text" placeholder="（参见国民经济行业分类，非基础研究填写）" id = "xqjsyyhy" ></td>-->
+<!--    </tr>-->
+    <tr id = "tr_xqjsyyhy">
+
+    </tr>
+    <tr align="center">
+        <td colspan="5">
+            <div>
+                <button type="button"  class="btn"  id = "btn_sub"  >保存并提交</button>
+            </div>
+        </td>
+    </tr>
+
+
+</table>
+<script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.2.1/bootstrap.min.js"></script>
+<script>
+    $(function () {
+        var nowDate = new Date();
+        var year = nowDate.getFullYear().toString();
+        var month =nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
+        month= month.toString();
+        var date = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
+        date = date.toString();
+        var x = 99;
+        var y = 10;
+        var rand = parseInt(Math.random()* (x - y + 1) + y) ;
+        var code = year+month+date+rand;
+        $("#Code").val(code.toString());
+        $("#em").val(localStorage.getItem("em"));
+        $("#jgmc").val(localStorage.getItem("inst"));
+        //字数限制500
+        $("#jgjj").change(function(){
+            var a = $("#jgjj").val().length;
+            if(a >=500){
+                var num=$("#jgjj").val().substr(0,500);
+                $("#jgjj").val(num);
+                alert("字数不能超过500");
+            }
+        });
+        //字数限制500
+        $("#xqgs").change(function(){
+            var a = $("#xqgs").val().length;
+            if(a >=500){
+                var num=$("#xqgs").val().substr(0,500);
+                $("#xqgs").val(num);
+                alert("字数不能超过500");
+            }
+        });
+        //动态加载学科分类项目
+        // $("#jcyj").change(function () {
+        //     //判断是否选中
+        //     var test = $("#jcyj").prop("checked");
+        //     var yyyj = $("#yyyj").prop("checked");
+        //     var syfz = $("#syfz").prop("checked");
+        //     var yjfz = $("#yjfz").prop("checked");
+        //     var jstg = $("#jstg").prop("checked");
+        //     var text = "<td  height=\"50px\">学科分类</td>\n" +
+        //         "        <td colspan=\"4\" height=\"40\"><input type=\"text\" id = \"xkfl\"  placeholder=\"(参加学科分类，限基础研究填写）\"></td>";
+        //     if(!(yyyj||syfz||yjfz||jstg))
+        //     {
+        //         $("#tr_xkfl").html(text);
+        //     }else{
+        //         $("#tr_xkfl").empty();
+        //     }
+        // });
+
+        //动态加载其他技术说明
+
+        //<tr align="center" id = "tr_qtjssm">
+        $("#qtjs").change(function () {
+            var ischecked = $("#qtjs").prop("checked");
+            var text = "<td height=\"80\">其他技术说明</td>\n" +
+                "        <td colspan=\"4\"><input type=\"text\"  id = \"qtjssm\" ></td>"
+            if(ischecked == true){
+                $("#tr_qtjssm").html(text);
+                $("#qtjs").prop("checked",true);
+            }else{
+                $("#tr_qtjssm").empty();
+            }
+        });
+        //动态加载其他技术需求合作模式说明
+        $("#qtjsxq").change(function () {
+            var ischecked = $("#qtjsxq").prop("checked");
+            var text = "<input type=\"text\" style=\"padding-left: 70px;width: 30%\" id = \"inp_jsxq\" placeholder=\"其他技术需求说明\">"
+            if(ischecked == true){
+                $("#tr_jsxq").prepend(text);
+            }else{
+                $("#inp_jsxq").remove();
+            }
+        });
+        //非空校验
+        $("#jgmc").blur(function() {
+            if ($("#jgmc").val() == "")
+            {
+                $('#jgmc').attr('placeholder','此项不能为空').css('color','red')
+            }else{
+                $('#jgmc').css('color','black')
+            }
+        });
+        $("#txdz").blur(function() {
+            if ($("#txdz").val() == "")
+            {
+                $('#txdz').attr('placeholder','此项不能为空').css('color','red')
+            }else{
+                $('#txdz').css('color','black')
+            }
+        });
+        $("#dzxx").blur(function() {
+            if ($("#dzxx").val() == "")
+            {
+                $('#dzxx').attr('placeholder','此项不能为空').css('color','red')
+            }else{
+                $('#dzxx').css('color','black')
+            }
+        });
+        $("#frdb").blur(function() {
+            if ($("#frdb").val() == "")
+            {
+                $('#frdb').attr('placeholder','此项不能为空').css('color','red')
+            }else{
+                $('#frdb').css('color','black')
+            }
+        });
+        $("#lxr").blur(function() {
+            if ($("#lxr").val() == "")
+            {
+                $('#lxr').attr('placeholder','此项不能为空').css('color','red')
+            }else{
+                $('#lxr').css('color','black')
+            }
+        });
+        // $("#gd").blur(function() {
+        //     if ($("#gd").val() == "")
+        //     {
+        //         $('#gd').attr('placeholder','此项不能为空').css('color','red')
+        //     }else{
+        //         $('#gd').css('color','black')
+        //     }
+        // });
+        $("#sj").blur(function() {
+            if ($("#sj").val() == "")
+            {
+                $('#sj').attr('placeholder','此项不能为空').css('color','red')
+            }else{
+                $('#sj').css('color','black')
+            }
+        });
+        $("#jgjj").blur(function() {
+            if ($("#jgjj").val() == "")
+            {
+                $('#jgjj').attr('placeholder','此项不能为空').css('color','red')
+            }else{
+                $('#jgjj').css('color','black')
+            }
+        });
+        $("#jsxq").blur(function() {
+            if ($("#jsxq").val() == "")
+            {
+                $('#jsxq').attr('placeholder','此项不能为空').css('color','red')
+            }else{
+                $('#jsxq').css('color','black')
+            }
+        });
+
+
+        //后端
+        $("#btn_sub").click(function () {
+
+            var r = confirm("需求信息审核后不能修改！ 确定提交吗?");
+
+            var username = localStorage.getItem("username");
+            var Code = $("#Code").val();
+            var jgmc = $("#jgmc").val();
+            var szdy = $("#szdy").val();
+            var flagjgmc = false
+            if(jgmc!="")
+            {
+                flagjgmc = true;
+            }
+            var txdz = $("#txdz").val();
+            var flagtxdz = false
+            if(txdz!="")
+            {
+                flagtxdz = true;
+            }
+            var dwwz = $("#dwwz").val();
+            var dzxx = $("#dzxx").val();
+            var flagdzxx = false
+            if(dzxx!="")
+            {
+                flagdzxx = true;
+            }
+            var frdb = $("#frdb").val();
+            var flagfrdb = false
+            if(frdb!="")
+            {
+                flagfrdb = true;
+            }
+            var em = $("#em").val();
+            var lxr = $("#lxr").val();
+            var flaglxr = false
+            if(lxr!="")
+            {
+                flaglxr = true;
+            }
+            var gd = $("#gd").val();
+            var sj = $("#sj").val();
+            var flagsj = false
+            if(sj!="")
+            {
+                flagsj = true;
+            }
+            var cz = $("#cz").val();
+            var jgsx = $("input[name='jgsx']:checked").val(); //机构属性
+            var jgjj = $("#jgjj").val();
+            var qsxqnf = $("#qsxqnx").val(); //起始需求年份
+            var jzxqnf = $("#jzxqnx").val() //截至需求年份
+            var jsxq = $("#jsxq").val();  //技术需求名称
+            var flagjsxq = false
+            if(jsxq!="")
+            {
+                flagjsxq = true;
+            }
+            var xqgs = ""; //需求概述
+            var zywt = $("#zywt").val();
+            var jsgj = $("#jsgj").val();
+            var yqmb = $("#yqmb").val();
+            xqgs = zywt+jsgj+yqmb;
+            var yjlxs = $("input[name='kjhdlx']:checked").val();  //研究类型
+            var yjlx = "";
+            for (const i of yjlxs) {
+                yjlx +=i;
+            }
+            var xkfl = "";
+            if(flag==0) xkfl = $("#xkfl").val();
+
+            var xqjssslys = new Array();
+            $('input[name=\"xqjs\"]:checked').each(function () {
+                if($(this).val()!="其他技术")
+                    xqjssslys.push($(this).val());
+                else
+                    xqjssslys.push($("#qtjssm").val());
+            });
+            var xqjsssly = "";
+            for (const i of xqjssslys) {
+                xqjsssly += i+"和";
+            }
+            xqjsssly = xqjsssly.substr(0,xqjsssly.length-1);
+            var xqjsyyhy = "";
+            if(flag==1) xqjsyyhy = $("#xqjsyyhy").val();
+            var jsxqhzmss = new Array();
+            $('input[name=\"jsxq\"]:checked').each(function () {
+                if($(this).val()!="其他")
+                    jsxqhzmss.push($(this).val());
+                else
+                    jsxqhzmss.push($("#inp_jsxq").val());
+            });
+            var jsxqhzms = "";
+            for (const i of jsxqhzmss) {
+                jsxqhzms += i+"和";
+            }
+            jsxqhzms = jsxqhzms.substr(0,jsxqhzms.length-1);
+            var ntrzj = $("#ntrzj").val();
+            //ajax连接数据库存
+            if(flagsj&&flagdzxx&&flagtxdz&&flagjgmc&&flagfrdb&&flagjsxq&&flaglxr&&r)
+                $.ajax({
+                    url:"../addform",
+                    data:{"username":username,"Code":Code,"jgmc":jgmc,"status":0,"txdx":txdz,"dwwz":dwwz,"dzxx":dzxx,"frdb":frdb,"em":em,"lxr":lxr,"gd":gd,"sj":sj,"cz":cz,"jgsx":jgsx,"jgjj":jgjj,"qsxqnf":qsxqnf,"jzxqnf":jzxqnf,"jsxq":jsxq,"xqgs":xqgs,"yjlx":yjlx,"gjz":gjzs,"xkfl":xkfl,"xqjsssly":xqjsssly,"xqjsyyhy":xqjsyyhy,"jsxqhzms":jsxqhzms,"ntrzj":ntrzj,"szdy":szdy},//前面命名，后面是值
+                    success: function(data){
+                        if(data=="yes")
+                        {
+                            alert("问卷表提交成功！");
+                            parent.location.reload();
+                        }
+                        else
+                        {
+                            alert("提交失败！");
+                        }
+                    },
+                    error:function (e) {
+                        console.log(e);
+                        alert("出错了");
+                    }
+                });
+            else
+                alert("您已经取消提交或者有未填项！！！");
+        })
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>浏览已经填写的问卷表</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../layui/layui.css" >
+</head>
+<body>
+<div id="div_frame1">
+<div align="center" style="padding-top: 40px">
+    <button class="btn btn-danger" onclick="addnew()">添加技术需求</button>
+    <HR style="FILTER:alpha(opacity = 100,finishopacity = 0,style = 3)" width="80%"color=#987cb9 SIZE=3>
+</div>
+    <div align="center">
+        <input type="text" placeholder="机构全称" id="jgmc" style="padding-top: 5px;height: 40px;border-radius: 5px;">
+        <input type="text" placeholder="所在地域" id="szdy" style="padding-top: 5px;height: 40px;border-radius: 5px;">
+        <input type="text" placeholder="联系人" id="lxr" style="padding-top: 5px;height: 40px;border-radius: 5px;">
+        <input type="text" placeholder="关键字" id="gjz" style="padding-top: 5px;height: 40px;border-radius: 5px;">
+        <input type="text" placeholder="科技活动类型" id="yjlx" style="padding-top: 5px;height: 40px;border-radius: 5px;">
+        <input type="text" placeholder="拟投入资金" id="ntrzj" style="padding-top: 5px;height: 40px;border-radius: 5px;"><br />
+            <select id="xssh" style="height: 40px;border-radius: 5px;"  >
+                <option value="-1" selected disabled style="display: none;">---形式审核状态---</option>
+                <option value="NO">未通过</option>
+                <option value="YES">通过</option>
+            </select>
+
+            <select id="bmsh" style="height: 40px;border-radius: 5px;">
+                <option value="-1" selected disabled style="display: none;">---部门审核状态---</option>
+                <option value="NO">未通过</option>
+                <option value="YES">通过</option>
+            </select>
+
+        <button class="btn btn-success" id = "search" onclick="search()">检索</button>
+    </div>
+<div id = "show" >
+
+</div>
+
+</div>
+</body>
+<script>
+
+    function showform(code){
+        location.href="../showform.html?code="+code;
+    }
+    function addnew(){
+        //window.location.href="addform.html";
+        $("#div_frame1").load("addform.html");
+    }
+    function deleteform(code){
+        var r = confirm("您确定要删除此需求吗？");
+        if(r){
+            $.ajax({
+                url:"deleteform",
+                type: "POST",
+                data:{"code":code},
+                success:function (data) {
+                    if(data=="yes")
+                        alert("删除需求失败！！");
+                    else
+                        alert("删除需求表失败！！");
+                },
+                error:function (e) {
+                    alert("删除需求失败！！");
+                }
+            })
+        }else
+            return ;
+    }
+    function search(){
+        var jgmc = $("#jgmc").val();
+        var szdy = $("#szdy").val();
+        var lxr = $("#lxr").val();
+        var gjz = $("#gjz").val();
+        var yjlx = $("#yjlx").val();
+        var ntrzj = $("#ntrzj").val();
+        $.post(
+            "../Fuzzy_query",
+             {"jgmc":jgmc,"szdy":szdy,"lxr":lxr,"gjz":gjz,"yjlx":yjlx,"ntrzj":ntrzj},
+            function (data) {
+                var text = "<table class=\"table table-striped\" align='center'><thead><tr><th>编号</th><th>机构名称</th><th>法人代表</th><th>技术需求名称</th><th>机构属性</th><th >科技活动类型</th><th>拟投入资金</th></tr></thead>";
+                for (i=0;i<data.length;i++) {
+                    text+="<tr>";
+                    text+="<td>"+data[i].code+"</td>" +
+                        "<td>"+data[i].jgmc+"</td>" +
+                        "<td>"+data[i].frdb+"</td>" +
+                        "<td>"+data[i].jsxq+"</td>" +
+                        "<td>"+data[i].jgsx+"</td>" +
+                        "<td >"+data[i].yjlx+"</td>" +
+                        "<td>"+data[i].ntrzj+"</td>" +
+                        "</tr>";
+                }
+                text+="</table>";
+                $("#show").html(text);
+            },
+            "json"
+        )
+    }
+    $(function () {
+
+        var inst = localStorage.getItem("inst");
+        $.ajax({
+            url:"../getformByinst",
+            type : "post",//请求方式
+            data:{"inst":inst},
+            dataType : "json",//数据格式
+            async : false,//是否异步请求
+            success:function (data) {
+                var text = "<table class=\"table table-striped\" align='center'><thead><tr><th>编号</th><th>机构名称</th><th>联系人</th><th>所在地域</th><th>审核状态</th><th></th><th >操作</th><th></th></tr></thead>";
+                for (i=0;i<data.length;i++) {
+                    var status = "未知状态";
+                    if(data[i].status ==3)
+                        status = "已审核";
+                    else
+                        status = "已审核";
+                    text+="<tr>";
+                    text+="<td>"+data[i].code+"</td>" +
+                        "<td>"+data[i].jgmc+"</td>" +
+                        "<td>"+data[i].lxr+"</td>" +
+                        "<td>"+data[i].szdy+"</td>" +
+                        "<td>"+status+"</td>" +
+                        "<td style='border-left: 1px dashed'><button class='btn btn-default' onclick='showform(this.value)' value='"+data[i].code+"'>查看</button></td>" +
+                        "<td><button class='btn btn-primary' onclick='updateform(this.value)' value='"+data[i].code+"'>修改</button></td>" +
+                        "<td ><button class='btn btn-danger'  onclick='deleteform(this.value)' value='"+data[i].code+"'>删除</button></td>" +
+                        "</tr>";
+                }
+                text+="</table>";
+                $("#show").html(text);
+            },
+            error:function (e) {
+                alert("通过机构名称获取表失败！！");
+            }
+        });
+
+    })
+
+</script>
+</html>

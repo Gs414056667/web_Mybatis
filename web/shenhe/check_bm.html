@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>浏览已经填写的问卷表</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!--    <link rel="stylesheet" href="bootstrap/bootstrap.min.css">-->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div id = "show">
+
+</div>
+<!--<table class="table table-striped"><thead><tr><th>编号</th><th>机构名称</th><th>审核状态</th><th>操作</th></tr></thead></table>-->
+</body>
+<script>
+    function showform(code){
+        location.href="../showform_to_bmcheck.html?code="+code;
+    }
+    var bm = localStorage.getItem("inst");
+    $(function () {
+        $.ajax({
+            url:"../getformBybm",
+            type : "post",//请求方式
+            data:{"bm":bm},
+            dataType : "json",//数据格式
+            async : false,//是否异步请求
+            success:function (data) {
+                var text = "<table class=\"table table-striped\"><thead><tr><th>编号</th><th>机构名称</th><th>通讯地址</th><th>联系人</th><th>审核状态</th><th>操作</th></tr></thead>";
+                for (i=0;i<data.length;i++) {
+                    var status = "未知状态";
+                    if(data[i].status==1)
+                        status = "形式审核通过";
+                    else if(data[i].status==2)
+                        status = "形式审核未通过";
+                    else if(data[i].status==3)
+                        status = "部门审核通过";
+                    else if(data[i].status==4)
+                        status = "部门审核未通过";
+                    text+="<tr>";
+                    text+="<td>"+data[i].code+"</td>" +
+                        "<td>"+data[i].jgmc+"</td>" +
+                        "<td>"+data[i].txdz+"</td>" +
+                        "<td>"+data[i].lxr+"</td>" +
+                        "<td>"+status+"</td>"
+                    if(data[i].status==1||data[i].status==4)
+                        text+= "<td><button class='btn btn-success' onclick='showform(this.value)' value='"+data[i].code+"'>进行审核</button></td>" ;
+                    else if(data[i].status==2)
+                        text+= "<td><button class='btn btn-danger'  >形审未通过</button></td>" ;
+                    else if(data[i].status==3)
+                        text+= "<td><button class='btn btn-secondary'  >审核已完成</button></td>" ;
+                    text+="</tr>";
+                }
+                text+="</table>";
+                $("#show").html(text);
+            },
+            error:function (e) {
+                alert("获取表失败！！");
+            }
+        });
+    })
+
+</script>
+</html>

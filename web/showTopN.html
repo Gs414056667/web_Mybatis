@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="all,follow">
+    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/4.2.1/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet">
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+</head>
+<script>
+    function search() {
+        var tjzd = $("#Tjzd").find("option:selected").text();
+        var N = $("#N").val();
+        $.ajax({
+            url: "TopN",
+            type: "post",//请求方式
+            data: {"tjzd": tjzd,"N":N},
+            datatype: "JSON",//
+            success: function (data) {
+                if(tjzd=="ip") {
+                        data = JSON.parse(data);
+                        var text = "<table id='table' class=\"table table-striped\"><thead><tr><th>ip</th><th>访问数</th></tr></thead><tbody>";
+                        var Data = [];
+                        for (i = 0; i < data.length; i++) {
+                            var str = new Object();
+                            str.name = data[i].ip;
+                            str.value = data[i].counts;
+                            Data.push(str);
+
+                            text += "<tr>";
+                            text += "<td>" + data[i].ip + "</td>" +
+                                "<td>" + data[i].counts + "</td>";
+                            text += "</tr>";
+                        }
+
+                        text += "</tbody></table>";
+                        $("#show").html(text);
+                        echarts.init(document.getElementById('main')).dispose();//销毁上一个实例，否则会影响接下来的表样式
+                        var myChart = echarts.init(document.getElementById('main'));
+                        // 指定图表的配置项和数据
+                        var option = {
+                            series: [
+                                {
+                                    name: '访问来源',
+                                    type: 'pie',
+                                    radius: '55%',
+                                    data: Data
+                                }
+                            ]
+                        };
+                        myChart.setOption(option);
+                        myChart.on('click', function (params) {
+                            // 获取table下所有的tr
+                            let trs = $("#table tbody tr");
+                            for (let i = 0; i < trs.length; i++) {
+                                // 获取tr下所有的td
+                                let tds = trs.eq(i).find("td");
+                                // 先把之前的标记的success去掉
+                                $("#table tbody tr").eq(i).removeClass('success');
+                                // 如果点击图示的名字和table下的某一个行的第一个td的值一样
+                                if (params.name == tds.eq(0).text()) {
+                                    //设置success状态
+                                    $("#table tbody tr").eq(i).addClass('success');
+                                    // 跳转到页面指定的id位置
+                                    $("html,body").animate({scrollTop: $("#table tbody tr").eq(i).offset().top}, 1000);
+                                }
+                            }
+                        });
+                        // 当鼠标落在tr时，显示浮动
+                        $("#table tbody").find("tr").on("mouseenter", function () {
+                            // 获得当前匹配元素的个数
+                            let row = $(this).prevAll().length;
+                            // 获得当前tr下td的名字
+                            let name = $("#table tbody").find("tr").eq(row).find("td").eq(0).text();
+                            // 设置浮动
+                            myChart.dispatchAction({type: 'highlight', seriesIndex: 0, name: name});//选中高亮
+                            myChart.dispatchAction({type: 'showTip', seriesIndex: 0, name: name});//选中高亮
+                        });
+                        // 当鼠标移开tr时候取消浮动
+                        $("#table tbody").find("tr").on("mouseleave", function () {
+                            // 获得当前匹配元素的个数
+                            let row = $(this).prevAll().length;
+                            // 获得当前tr下td的名字
+                            let name = $("#table tbody").find("tr").eq(row).find("td").eq(0).text();
+                            // 设置浮动
+                            myChart.dispatchAction({type: 'downplay', name: name});//选中高亮
+                            myChart.dispatchAction({type: 'hideTip', seriesIndex: 0, name: name});//选中高亮
+                        });
+
+                }
+                else if(tjzd=="流量"){
+                    data = JSON.parse(data);
+                    var text = "<table id='table' class=\"table table-striped\"><thead><tr><th>流量</th><th>访问数</th></tr></thead><tbody>";
+                    var Data = [];
+                    for (i = 0; i < data.length; i++) {
+                        var str = new Object();
+                        str.name = data[i].traffic;
+                        str.value = data[i].counts;
+                        Data.push(str);
+
+                        text += "<tr>";
+                        text += "<td>" + data[i].traffic + "</td>" +
+                            "<td>" + data[i].counts + "</td>";
+                        text += "</tr>";
+                    }
+
+                    text += "</tbody></table>";
+                    $("#show").html(text);
+                    echarts.init(document.getElementById('main')).dispose();//销毁上一个实例，否则会影响接下来的表样式
+                    var myChart = echarts.init(document.getElementById('main'));
+                    // 指定图表的配置项和数据
+                    var option = {
+                        series: [
+                            {
+                                name: '访问来源',
+                                type: 'pie',
+                                radius: '55%',
+                                data: Data
+                            }
+                        ]
+                    };
+                    myChart.setOption(option);
+                    myChart.on('click', function (params) {
+                        // 获取table下所有的tr
+                        let trs = $("#table tbody tr");
+                        for (let i = 0; i < trs.length; i++) {
+                            // 获取tr下所有的td
+                            let tds = trs.eq(i).find("td");
+                            // 先把之前的标记的success去掉
+                            $("#table tbody tr").eq(i).removeClass('success');
+                            // 如果点击图示的名字和table下的某一个行的第一个td的值一样
+                            if (params.name == tds.eq(0).text()) {
+                                //设置success状态
+                                $("#table tbody tr").eq(i).addClass('success');
+                                // 跳转到页面指定的id位置
+                                $("html,body").animate({scrollTop: $("#table tbody tr").eq(i).offset().top}, 1000);
+                            }
+                        }
+                    });
+                    // 当鼠标落在tr时，显示浮动
+                    $("#table tbody").find("tr").on("mouseenter", function () {
+                        // 获得当前匹配元素的个数
+                        let row = $(this).prevAll().length;
+                        // 获得当前tr下td的名字
+                        let name = $("#table tbody").find("tr").eq(row).find("td").eq(0).text();
+                        // 设置浮动
+                        myChart.dispatchAction({type: 'highlight', seriesIndex: 0, name: name});//选中高亮
+                        myChart.dispatchAction({type: 'showTip', seriesIndex: 0, name: name});//选中高亮
+                    });
+                    // 当鼠标移开tr时候取消浮动
+                    $("#table tbody").find("tr").on("mouseleave", function () {
+                        // 获得当前匹配元素的个数
+                        let row = $(this).prevAll().length;
+                        // 获得当前tr下td的名字
+                        let name = $("#table tbody").find("tr").eq(row).find("td").eq(0).text();
+                        // 设置浮动
+                        myChart.dispatchAction({type: 'downplay', name: name});//选中高亮
+                        myChart.dispatchAction({type: 'hideTip', seriesIndex: 0, name: name});//选中高亮
+                    });
+                }
+                else if(tjzd=="类型"){
+                    data = JSON.parse(data);
+                    var text = "<table id='table' class=\"table table-striped\"><thead><tr><th>类型</th><th>访问数</th></tr></thead><tbody>";
+                    var Data = [];
+                    for (i = 0; i < data.length; i++) {
+                        var str = new Object();
+                        str.name = data[i].types;
+                        str.value = data[i].counts;
+                        Data.push(str);
+
+                        text += "<tr>";
+                        text += "<td>" + data[i].types + "</td>" +
+                            "<td>" + data[i].counts + "</td>";
+                        text += "</tr>";
+                    }
+
+                    text += "</tbody></table>";
+                    $("#show").html(text);
+                    echarts.init(document.getElementById('main')).dispose();//销毁上一个实例，否则会影响接下来的表样式
+                    var myChart = echarts.init(document.getElementById('main'));
+                    // 指定图表的配置项和数据
+                    var option = {
+                        series: [
+                            {
+                                name: '访问来源',
+                                type: 'pie',
+                                radius: '55%',
+                                data: Data
+                            }
+                        ]
+                    };
+                    myChart.setOption(option);
+                    myChart.on('click', function (params) {
+                        // 获取table下所有的tr
+                        let trs = $("#table tbody tr");
+                        for (let i = 0; i < trs.length; i++) {
+                            // 获取tr下所有的td
+                            let tds = trs.eq(i).find("td");
+                            // 先把之前的标记的success去掉
+                            $("#table tbody tr").eq(i).removeClass('success');
+                            // 如果点击图示的名字和table下的某一个行的第一个td的值一样
+                            if (params.name == tds.eq(0).text()) {
+                                //设置success状态
+                                $("#table tbody tr").eq(i).addClass('success');
+                                // 跳转到页面指定的id位置
+                                $("html,body").animate({scrollTop: $("#table tbody tr").eq(i).offset().top}, 1000);
+                            }
+                        }
+                    });
+                    // 当鼠标落在tr时，显示浮动
+                    $("#table tbody").find("tr").on("mouseenter", function () {
+                        // 获得当前匹配元素的个数
+                        let row = $(this).prevAll().length;
+                        // 获得当前tr下td的名字
+                        let name = $("#table tbody").find("tr").eq(row).find("td").eq(0).text();
+                        // 设置浮动
+                        myChart.dispatchAction({type: 'highlight', seriesIndex: 0, name: name});//选中高亮
+                        myChart.dispatchAction({type: 'showTip', seriesIndex: 0, name: name});//选中高亮
+                    });
+                    // 当鼠标移开tr时候取消浮动
+                    $("#table tbody").find("tr").on("mouseleave", function () {
+                        // 获得当前匹配元素的个数
+                        let row = $(this).prevAll().length;
+                        // 获得当前tr下td的名字
+                        let name = $("#table tbody").find("tr").eq(row).find("td").eq(0).text();
+                        // 设置浮动
+                        myChart.dispatchAction({type: 'downplay', name: name});//选中高亮
+                        myChart.dispatchAction({type: 'hideTip', seriesIndex: 0, name: name});//选中高亮
+                    });
+                }
+            },
+            error: function () {
+                alert("获取数据失败了");
+            }
+
+        })
+    }
+</script>
+<body>
+
+    <div align="center">
+        <h2>统计查询</h2>
+        <HR  width="80%"color=#987cb9 SIZE=3>
+    </div>
+    <div align="center" >
+        请选择统计字段:
+        <select   style="width:210px;" id="Tjzd">
+            <option value="" selected disabled>---请选择统计字段---</option>
+            <option value="">ip</option>
+            <option value="">流量</option>
+            <option value="">类型</option>
+        </select>
+        <input type="text" placeholder="请输入要统计的N值" id="N">
+        <button class="btn btn-success" id = "search" onclick="search()">统计查询</button>
+    </div>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="width: 600px;height:400px;margin: auto " align="center"></div>
+<div id="show" align="center"></div>
+</body>
+</html>

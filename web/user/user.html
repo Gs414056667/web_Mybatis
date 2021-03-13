@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>欢迎光临</title>
+    <link rel="stylesheet" href="../layui/layui.css" >
+    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/4.2.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,700">
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/zTree.v3/3.5.33/js/jquery.ztree.core.min.js"></script>
+    <link href="https://cdn.bootcss.com/zTree.v3/3.5.33/css/zTreeStyle/zTreeStyle.min.css" rel="stylesheet">
+</head>
+<script>
+    $(function () {
+            $("#name").html(localStorage.getItem("username"));
+            $("#name").css("color","white");
+            $("#inst").html(localStorage.getItem("inst"));
+
+        var permissioncode = localStorage.getItem("permissioncode");
+        if(permissioncode.indexOf("4")!=-1)
+        {
+            var text1 = "<dd><a  id=\"change\" onclick=\"updatepwd()\">修改密码</a></dd> ";
+            $("#show1").append(text1);
+        }
+        if(permissioncode.indexOf("3")!=-1)
+            {
+                var text2 = "<dd><a  id=\"information\" onclick=\"updatepwd()\">用户信息</a></dd>";
+                $("#show1").append(text2);
+        }
+
+        if(permissioncode.indexOf("1")!=-1){
+            var text3 = "<li class=\"layui-nav-item\"><a   id = \"write\">需求征集</a></li>";
+            $("#show2").append(text3);
+        }
+        if(permissioncode.indexOf("2")!=-1){
+            var text4 = "<li class=\"layui-nav-item\"><a  target=\"frame\" id = \"search\" >需求管理</a></li>";
+            $("#show2").append(text4);
+        }
+
+        $("#search").click(function () {
+            $("#div_frame").load("xqgl.html");
+        })
+        $("#write").click(function () {
+            $("#div_frame").load("addform.html");
+        })
+
+    })
+
+    function updatepwd()
+    {
+        var password=prompt("请输入修改后的密码：");
+        if(password!=""&&password!=null)
+        {
+            $.ajax({
+                url: "../updatepsw",
+                type: "POST",
+                data: {"username": localStorage.getItem("username"), "password": password,"type":update},
+                dataType: "text",
+                async: true,
+                success: function (data) {
+                    if(data=="yes")
+                        alert("修改成功！");
+                    else
+                        alert("修改失败！");
+                },
+                error: function (e) {
+                    alert("出现错误！！");
+                }
+            });
+        }
+    }
+</script>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">重大技术需求征集系统</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="#" id="inst"></a></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item" >
+                <a href="javascript:;">
+                    <img src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3777132271,986044422&fm=26&gp=0.jpg" class="layui-nav-img">
+                    <b id="name"></b>
+                </a>
+                <dl class="layui-nav-child" id = "show1" >
+
+
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="../index.html">退出</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree"  lay-filter="test" id = "show2">
+
+
+<!--                <li class="layui-nav-item"><a target="frame" href="Tjsearch.html"  >统计查询</a></li>-->
+            </ul>
+        </div>
+    </div>
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div style="padding: 0px"  id ="div_frame" >
+            <iframe id="righFrame" name="frame"  width="100%" height="900px" scrolling="yes"  style="border:1px solid #CCC;"></iframe>
+        </div>
+    </div>
+</div>
+<!--<script src="../layui/layui.all.js"></script>-->
+<script>
+    //JavaScript代码区域
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>查看需求表</title>
+    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/4.2.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,700">
+    <link rel="stylesheet" href="layui/layui.css" >
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <link rel="stylesheet" href="css/tk.css">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+
+    <script src="https://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.2.1/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/Form.css" id="theme-stylesheet">
+</head>
+<style>
+    #qsxqnx {
+        text-align: center;
+    }
+    #jzxqnx{
+        text-align: center;
+    }
+
+    body
+    {
+        margin:0;padding:0;background:url(resource/img/background.png);
+    }
+</style>
+<body style="text-align:center;">
+<table border="1px" cellspacing="0" align="center" width="890"  height="50" style="margin:auto;" >
+    <tr align="center">
+        <td width="200">机构名称</td>
+        <td width="200"><input type="text" id = "jgmc"  readonly ></td>
+        <td width="200">表格编号</td>
+        <td  colspan="2"><input type="text" id = "Code" readonly="readonly"></td>
+    </tr>
+    <tr align="center">
+        <td width="200">通讯地址</td>
+        <td colspan="1"><input type="text" id = "txdz" readonly ></td>
+        <td>所在地域</td>
+        <td colspan="2"><input type="text" id="szdy" readonly> </td>
+    </tr>
+
+    <tr align="center">
+        <td width="200">单位网址</td>
+        <td width="200" ><input type="text" id = "dwwz" readonly></td>
+        <td width="200">电子信箱</td>
+        <td width="200" colspan="2"><input type="text"  id="dzxx" readonly></td>
+    </tr>
+
+    <tr align="center">
+        <td width="200">法人代表</td>
+        <td width="200"><input type="text" id = "frdb" readonly></td>
+        <td width="200">邮政编码</td>
+        <td width="200"  colspan="2"><input type="text" id = "em" readonly></td>
+    </tr>
+
+    <tr  >
+        <td rowspan="2" align="center">联系人</td>
+        <td width="200" rowspan="2" ><input type="text" id = "lxr" readonly></td>
+        <td width="200" align="center">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话</td>
+        <td colspan="2" >1.固定<input type="text" id = "gd" style="padding-left:10px;width: 33%" readonly> 2.手机<input type="text" id = "sj" style="padding-left:10px;width: 33%" readonly></td>
+    </tr>
+    <tr align="center">
+        <td >传&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;真</td>
+        <td colspan="2"><input type="text" id = "cz" readonly></td>
+    </tr>
+    <tr >
+        <td align="center">机构属性</td>
+        <td colspan="4">
+            <input type="checkbox" class="fxk" name="jgsx"  id="qy" value="企业" onchange="jgsx()"/><label for="qy">企业</label>
+            <input type="checkbox" class="fxk" name="jgsx"  id="gdyx" value="高等院校" onchange="jgsx()"/><label for="gdyx">高等院校</label>
+            <input type="checkbox" class="fxk" name="jgsx"  id="yjjg" value="研究机构" onchange="jgsx()"/><label for="yjjg">研究机构</label>
+            <input type="checkbox" class="fxk" name="jgsx"  id="qt" value="其他" onchange="jgsx()"/><label for="qt">其他</label>
+        </td>
+    </tr>
+    <tr align="center">
+        <td colspan="5" height="150"><textarea  style="width: 800px;height: 150px;" border="1px"  id = "jgjj" readonly></textarea></td>
+    </tr>
+    <tr align="center">
+        <td height="50px">技术需求名称</td>
+        <td colspan="1"><input type="text" id = "jsxq" readonly></td>
+        <td>需求年限</td>
+        <td colspan="2"><input type="text" style="width: 36%" id ="qsxqnx" readonly>年&nbsp;&nbsp;——&nbsp;&nbsp;<input type="text" style="width: 36%" id ="jzxqnx" readonly>年</td>
+    </tr>
+
+    <tr align="center">
+        <td  height="180" >技术需求概述</td>
+        <td colspan="4"><textarea id = "xqgs" style="height: 90px" readonly ></textarea></td>
+    </tr>
+
+    <tr>
+        <td align="center" >关键字:</td>
+        <td colspan="4">
+            <input type="text"  id = "gjz" readonly >
+        </td>
+    </tr>
+    <tr>
+        <td>拟投入资金总额:</td>
+        <td colspan="4">
+            <input type="text" id="ntrzj" style="width: 30%" readonly>万元
+        </td>
+    </tr>
+    <tr >
+        <td  height="50px" align="center">科技活动类型</td>
+        <td colspan="4" >
+            <input type="text" id = "yjlx" readonly>
+        </td>
+    </tr>
+    <tr align="center" id = "tr_xkfl">
+        <td  height="50px" align="center">学科分类</td>
+        <td colspan="4" >
+            <input type="text" id = "xkfl" readonly>
+        </td>
+    </tr>
+    <tr >
+        <td height="80px" align="center">需求技术
+            所属领域
+            （非基础研究填写）</td>
+        <td colspan="4">
+            <input type="text"  id = "xqjsssly" readonly>
+        </td>
+    </tr>
+
+    <tr align="center">
+        <td >需求技术
+            应用行业</td>
+        <td colspan="4" height="100"><input type="text" placeholder="（参见国民经济行业分类，非基础研究填写）" id = "xqjsyyhy" readonly></td>
+    </tr>
+    <tr >
+        <td  width="200" align="center">技术需求
+            合作模式</td>
+        <td colspan="4" width="500" id = "tr_jsxq">
+            <input type="text"  id = "jsxqhzms" readonly>
+        </td>
+    </tr>
+
+
+    <tr align="center">
+        <td colspan="5">
+            <button type="button"  class="btn"  id = "btn_back" >返回</button>
+        </td>
+    </tr>
+
+
+</table>
+
+<script src="https://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.2.1/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+    $(function() {
+        var code ;
+
+        //获取表格的编码
+        function GetQueryString(name)
+        {
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);//search,查询？后面的参数，并匹配正则
+            if(r!=null)return  decodeURIComponent(r[2]); return null;
+        }
+
+        code=GetQueryString("code").toString();
+        $.post(
+            "getformBycode",
+            {"code":code},
+            function (data) {
+                var jgmc = data.jgmc;
+                var txdz = data.txdz;
+                var dwwz = data.dwwz;
+                var dzyx = data.dzyx;
+                var frdb = data.frdb;
+                var ntrzj = data.ntrzj;
+                var em = data.em;
+                var lxr = data.lxr;
+                var gd = data.gd;
+                var sj = data.sj;
+                var cz = data.cz;
+                var jgsx = data.jgsx;
+                //var inputs = document.getElementsByTagName('jgsx');
+                $("input[name='jgsx']").each(function(){
+                    if (jgsx==this.value) {
+                        this.checked = true;
+                    }
+                });
+                // for (var i =0;i<inputs.length;i++) {
+                //     if (jgsx===inputs[i].value) {
+                //         inputs[i].checked = true;
+                //     }
+                // }
+                var jgjj = data.jgjj;
+                var jsxq = data.jsxq;
+                var qsxqnf = data.qsxqnf;
+                var jzxqnf = data.jzxqnf;
+                var xqgs = data.xqgs;
+                var gjz = data.gjz;
+                var yjlx = data.yjlx;
+                var xkfl = data.xkfl;
+                var xqjsssly = data.xqjsssly;
+                var xqjsyyhy = data.xqjsyyhy;
+                var jsxqhzms = data.jsxqhzms;
+                var szdy = data.szdy;
+                $("#Code").val(code);
+                $("#jgmc").val(jgmc);
+                $("#txdz").val(txdz);
+                $("#dwwz").val(dwwz);
+                $("#dzxx").val(dzyx);
+                $("#frdb").val(frdb);
+                $("#em").val(em);
+                $("#lxr").val(lxr);
+                $("#gd").val(gd);
+                $("#sj").val(sj);
+                $("#cz").val(cz);
+                $("#jsxq").val(jsxq);
+                $("#xqgs").val(xqgs);
+                $("#jgjj").val(jgjj);
+                $("#qsxqnx").val(qsxqnf);
+                $("#jzxqnx").val(jzxqnf);
+                $("#gjz").val(gjz);
+                $("#szdy").val(szdy);
+                $("#ntrzj").val(ntrzj);
+                $("#yjlx").val(yjlx);
+                $("#xkfl").val(xkfl);
+                $("#xqjsssly").val(xqjsssly);
+                $("#jsxqhzms").val(jsxqhzms);
+                $("#xqjsyyhy").val(xqjsyyhy);
+            },
+            "json"
+        )
+        $("#btn_back").click(function () {
+            window.history.back(-1);
+        })
+
+    });
+</script>
+</body>
+</html>

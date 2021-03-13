@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>统计查询</title>
+    <link rel="stylesheet" href="../css/Form.css" id="theme-stylesheet">
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!--    <link rel="stylesheet" href="bootstrap/bootstrap.min.css">-->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.2.1/bootstrap.min.js"></script>
+</head >
+<style>
+    body
+    {
+        margin:0;padding:0;background:url(../resource/img/background.png);
+    }
+</style>
+<body >
+<div >
+    <table align="center" >
+        <tr style="width: 800px; ">
+            <td><input type="text" placeholder="关键字" id="gjz" style=" border: 1px dashed gray" ></td>
+            <td><input type="text" placeholder="技术需求名称" id = "jsxq" style=" border: 1px dashed gray"></td>
+            <td><input type="text" placeholder="机构属性" id = "jgsx" style=" border: 1px dashed gray"></td>
+            <td><input type="text" placeholder="机构全称" id = "jgqc" style=" border: 1px dashed gray"></td>
+            <td><button type="button"  class="btn"  id = "btn_js" style=" border: 1px solid black" >检索</button></td>
+        </tr>
+        <tr>
+            <td><input type="text" placeholder="研究类型" style=" border: 1px dashed gray"></td>
+            <td><input type="text" placeholder="学科分类" style=" border: 1px dashed gray"></td>
+            <td><button type="button"  class="btn"  id = "btn_cx" style=" border: 1px solid black"  >统计查询</button></td>
+        </tr>
+    </table>
+</div>
+<div >
+    <table class="table table-striped" id = "show"><thead><tr><th>机构名称</th><th>所在地域</th><th>技术需求名称</th><th>关键字</th><th>机构属性</th><th>科技活动类型</th><th>操作</th></tr></thead>
+
+    </table>
+</div>
+<script>
+    $(function () {
+        $("#gjz").change(function () {
+            var gjz = $("#gjz").val();
+            if(gjz!="")
+            $.ajax({
+                url:"../getAll",
+                type : "post",//请求方式
+                data:{"gjz":gjz},
+                dataType : "json",//数据格式
+                async:true,
+                success:function (data) {
+                    var text = "";
+                    for (i=0;i<data.length;i++) {
+                        text+="<tr>";
+                        text+="<td>"+data[i].jgmc+"</td>" +
+                            "<td>"+data[i].szdy+"</td>" +
+                            "<td>"+data[i].jsxq+"</td>" +
+                            "<td>"+data[i].gjz+"</td>" +
+                            "<td>"+data[i].jgsx+"</td>" +
+                            "<td>"+data[i].yjlx+"</td>" +
+                            "<td><button class='btn btn-success'  value='"+data[i].code+"'>查看</button></td>" +
+                            "</tr>";
+                    }
+                    text+="</table>";
+                    $("#show").append(text);
+                },
+                error:function (e) {
+                    alert("出错了！gjz");
+                }
+            })
+            else
+                return;
+        })
+    })
+</script>
+</body>
+</html>

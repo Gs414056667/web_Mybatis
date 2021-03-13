@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理</title>
+    <link rel="stylesheet" href="../css/tk.css" id="theme-stylesheet">
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!--    <link rel="stylesheet" href="bootstrap/bootstrap.min.css">-->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.2.1/bootstrap.min.js"></script>
+</head>
+<style>
+    body
+    {
+        margin:0;padding:0;background:url(../resource/img/background.png);
+    }
+</style>
+<script>
+    function reset_password( username){
+        var r = confirm("您确定要重置"+username+"的密码吗？")
+        if(r == true)
+        $.ajax({
+            url: "../updatepsw",
+            type: "POST",
+            data: {"username": username,"type":"reset"},
+            dataType: "text",
+            async: true,
+            success: function (data) {
+                if(data=="yes")
+                    alert("重置密码成功！");
+                else
+                    alert("重置密码失败！");
+            },
+            error: function (e) {
+                alert("重置密码出现错误！！");
+            }
+        });
+        else
+            return ;
+    }
+    function reset_status1(username){
+        var r = confirm("您确定要封禁"+username+"的账号状态吗？");
+        if(r == true)
+        {
+            $.ajax({
+                url: "../updatestatus",
+                type: "POST",
+                data: {"username": username,"status":1},
+                dataType: "text",
+                async: true,
+                success: function (data) {
+                    if(data=="yes") {
+                        alert("封禁成功！");
+                        this.location.reload();
+                    }
+                    else
+                        alert("状态修改失败！");
+                },
+                error: function (e) {
+                    alert("状态修改出现错误！！");
+                }
+            });
+        }
+        else
+            return ;
+    }
+    function reset_status2(username){
+        var r = confirm("您确定要启用"+username+"的账号吗？");
+        if(r == true)
+        {
+            $.ajax({
+                url: "../updatestatus",
+                type: "POST",
+                data: {"username": username,"status":0},
+                dataType: "text",
+                async: true,
+                success: function (data) {
+                    if(data=="yes") {
+                        alert("启用成功！");
+                        this.location.reload();
+                    }
+                    else
+                        alert("启用失败！");
+                },
+                error: function (e) {
+                    alert("启用出现错误！！");
+                }
+            });
+        }
+        else
+            return ;
+    }
+    $(window).ready(function () {
+
+        $.ajax({
+            url:"../getAlluser",
+            type : "post",//请求方式
+            dataType : "json",//数据格式
+            async:true,
+            success:function (data) {
+                var text = "<table class=\"table table-striped\"><thead><tr><th>所在公司</th><th>用户名</th><th>账号状态</th><th>角色类型</th><th>操作1</th><th>操作2</th><th>操作3</th></tr></thead>";
+                for (i=0;i<data.length;i++) {
+                    var status = "";
+                    if(data[i].status == 1)
+                        status = "正常";
+                    else if (data[i].status == 0)
+                        status = "封禁中";
+                    text+="<tr>";
+                    text+="<td>"+data[i].inst+"</td>" +
+                        "<td>"+data[i].username+"</td>" +
+                        "<td>"+status+"</td>" +
+                        "<td>"+data[i].job+"</td>" +
+                        "<td><button class='btn btn-primary' onclick='reset_password(this.value)' value='"+data[i].username+"'>重置密码</button></td>" ;
+                    if(data[i].status==1)
+                        text+="<td><button class='btn btn-danger' onclick='reset_status1(this.value)' value='"+data[i].username+"'>账号封禁</button></td>" ;
+                    if(data[i].status==0)
+                        text+="<td><button class='btn btn-primary' onclick='reset_status2(this.value)' value='"+data[i].username+"'>账号启用</button></td>" ;
+
+                    text+="<td><button class='btn btn-success' onclick='popCenterWindow(this.value)'  value='"+data[i].username+"'>修改角色</button></td>" +
+                        "</tr>";
+                }
+                text+="</table>";
+                $("#show").html(text);
+            },
+            error:function (e) {
+                alert("获取用户出错了！");
+            }
+        })
+    });
+    //获取窗口的高度
+    var windowHeight;
+    //获取窗口的宽度
+    var windowWidth;
+    //获取弹窗的宽度
+    var popWidth;
+    //获取弹窗高度
+    var popHeight;
+
+    function init() {
+        windowHeight = $(window).height();
+        windowWidth = $(window).width();
+        popHeight = $(".window").height();
+        popWidth = $(".window").width();
+    }
+    //关闭窗口的方法
+    function closeWindow() {
+        $(".close_btn").click(function () {
+            $('.window').hide("slow");
+            $('.mask').css('display', 'none');
+        });
+        $(".cancel").click(function () {
+            $('.window').hide("slow");
+            $('.mask').css('display', 'none');
+        })
+    }
+
+    //添加按钮点击事件
+    function reset_role(username) {
+        $("#reset").click(function () {
+            var role = $("input[name='jsbg']:checked").val();
+            $.ajax({
+                url: "../updaterole",
+                type: "POST",
+                data: {"username": username,"role":role},
+                dataType: "text",
+                async: true,
+                success: function (data) {
+                    if(data=="yes") {
+                        alert("修改角色类型成功！");
+                        $('.window').hide("slow");
+                        $('.mask').css('display', 'none');
+                    }
+                    else
+                        alert("修改角色类型失败！");
+                },
+                error: function (e) {
+                    alert("修改角色类型出现错误！！");
+                }
+            });
+        })
+    }
+    //定义弹出居中窗口的方法
+    function popCenterWindow(username) {
+        //设置别的地方不可点击，遮罩层
+        $('.mask').css('display', 'block');
+        $('.mask').css('width', $(window).width())
+        $('.mask').css('height', $(document).height())
+        init();
+        //计算弹出窗口的左上角X的偏移量
+        var popX = (windowWidth - popWidth) / 2;
+        // 计算弹出窗口的左上角Y的偏移量为窗口的高度 - 弹窗高度 / 2 + 被卷去的页面的top
+        var popY = (windowHeight - popHeight) / 2 + $(document).scrollTop();
+        //设定窗口的位置
+        $("#center").css("top", popY).css("left", popX).slideToggle("fast");
+        reset_role(username);
+        closeWindow();
+    }
+</script>
+
+<body>
+<div id="show">
+
+</div>
+
+
+<div class="mask"></div>
+<div class="window" id="center">
+    <div class="border_add_nav">
+        <div> </div>
+        <div class="border_add_nav_box flex-container">
+            <span class="add_title">角色变更</span>
+            <span class="close_btn">X</span>
+        </div>
+    </div>
+    <div class="border_add_main_content">
+        <div class="border_add_main_content_box" align="center">
+            <span class="name" >角色名称</span>
+            <HR style="FILTER:alpha(opacity=100,finishopacity=0,style=3)" width="80%"color=#987cb9 SIZE=3>
+        </div>
+        <div class="border_add_main_content_box" align="center">
+            <input  type="radio" name = "jsbg" value="注册用户">&nbsp;&nbsp;&nbsp;注册用户
+            <HR style="FILTER:alpha(opacity=100,finishopacity=0,style=3)" width="80%"color=#987cb9 SIZE=3>
+        </div>
+        <div class="border_add_main_content_box" align="center">
+            <input  type="radio" name = "jsbg" value="部门审核员" >部门审核员
+            <HR style="FILTER:alpha(opacity=100,finishopacity=0,style=3)" width="80%"color=#987cb9 SIZE=3>
+        </div>
+        <div class="border_add_main_content_box" align="center">
+            <input  type="radio" name = "jsbg" value="管理员">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;管理员
+            <HR style="FILTER:alpha(opacity=100,finishopacity=0,style=3)" width="80%"color=#987cb9 SIZE=3>
+        </div>
+        <div class="border_add_main_content_box" align="center">
+            <input  type="radio" name = "jsbg" value="形式审核员">形式审核员
+        </div>
+    </div>
+    <div class="border_add_btn_box">
+        <div class="pull-right" style="float:right;">
+            <div class="cancel">取消</div>
+            <div class="save" id = "reset">更改</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

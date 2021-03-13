@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>角色管理</title>
+    <link rel="stylesheet" href="../css/tk.css" id="theme-stylesheet">
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!--    <link rel="stylesheet" href="bootstrap/bootstrap.min.css">-->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.2.1/bootstrap.min.js"></script>
+</head>
+<style>
+    body
+    {
+        margin:0;padding:0;background:url(../resource/img/background.png);
+    }
+</style>
+<script>
+    function qxxs() {
+        var role = $("#role").find("option:selected").text();
+        if(role == "管理员"){
+            selectAll();
+        }
+        if(role == "部门审核员"){
+            selectNull();
+            var sel = [];
+            sel.push("5");
+            sel.push("7");
+            for(var i=0;i<sel.length;i++){
+                $("input[name='qxsy']").each(function(){
+                    if ($(this).val() == sel[i]) {
+                        this.checked=true;
+                    }
+                });
+            }
+        }
+        if(role == "形式审核员"){
+            selectNull();
+            var sel = [];
+            sel.push("8");
+            sel.push("7");
+            for(var i=0;i<sel.length;i++){
+                $("input[name='qxsy']").each(function(){
+                    if ($(this).val() == sel[i]) {
+                        this.checked=true;
+                    }
+                });
+            }
+        }
+        if(role == "注册用户"){
+            selectNull();
+            var sel = [];
+            sel.push("4");
+            sel.push("2");
+            sel.push("3");
+            sel.push("1");
+            for(var i=0;i<sel.length;i++){
+                $("input[name='qxsy']").each(function(){
+                    if ($(this).val() == sel[i]) {
+                        this.checked=true;
+                    }
+                });
+            }
+        }
+    }
+    function selectNull(){
+        $("input[name='qxsy']").each(function(){
+            this.checked=false;
+        });
+    }
+    function selectAll(){
+        $("input[name='qxsy']").each(function(){
+            //$(this).attr("checked", true);
+            this.checked=true;
+        });
+    }
+    $(function () {
+        $.ajax({
+            url:"../getAllpermission",
+            type : "post",//请求方式
+            dataType : "json",//数据格式
+            async:true,
+            success:function (data) {
+                var text = "<table class=\"table table-striped\" align=\"center\" style=\"width: 900px ; border:1px #6c757d dashed \">\n" +
+                    "        <thead>\n" +
+                    "          <tr>\n" +
+                    "              <th style=\"width: 26%\">权限编号</th>\n" +
+                    "            <th style=\"width: 26%\">权限名称</th>\n" +
+                    "            <th style=\"width: 26%\">权限说明</th>\n" +
+                    "            <th align=\"center\">是否授予</th>\n" +
+                    "          </tr>\n" +
+                    "        </thead>";
+                for (i=0;i<data.length;i++) {
+
+                    text+="<tr>";
+                    text+="<td>"+data[i].id+"</td>" +
+                        "<td>"+data[i].permission_name+"</td>" +
+                        "<td>"+data[i].qxsm+"</td>" ;
+                    text+="<td><input name=\"qxsy\" value='"+data[i].id+"' type=\"checkbox\" ></td>" +
+                        "</tr>";
+                }
+                text+="</table>";
+                $("#show").html(text);
+            },
+            error:function (e) {
+                alert("获取权限出错了！");
+            }
+        })
+
+
+        $("#btn_submit").click(function () {
+            var permissioncode = "" ;
+            $("input[name='qxsy']").each(function(){
+                if(this.checked){
+                    permissioncode+=$(this).val()+"-";
+                }
+            });
+            permissioncode = permissioncode.substr(0,permissioncode.length-1);
+            var role = $("#role").find("option:selected").text();
+            $.ajax({
+                url:"../role_permissioncode",
+                type : "post",//请求方式
+                data: {"role": role, "permissioncode": permissioncode},
+                dataType : "text",//数据格式
+                async:false,
+                success:function (data) {
+                    if(data=="yes")
+                    {
+                        alert("角色权限修改成功！！");
+
+                    }
+                    else
+                    {
+                        alert("角色权限修改失败！！");
+                    }
+                },
+                error:function () {
+                    alert("出错了！");
+                }
+            })
+        })
+    })
+</script>
+<script type="text/javascript">
+    $(window).ready(function () {
+        $("#btn_addrole").click(function () {
+            $('.mask').css('display', 'block');
+            $('.mask').css('width', $(window).width())
+            $('.mask').css('height', $(document).height())
+            popCenterWindow();
+        });
+    });
+    //获取窗口的高度
+    var windowHeight;
+    //获取窗口的宽度
+    var windowWidth;
+    //获取弹窗的宽度
+    var popWidth;
+    //获取弹窗高度
+    var popHeight;
+
+    function init() {
+        windowHeight = $(window).height();
+        windowWidth = $(window).width();
+        popHeight = $(".window").height();
+        popWidth = $(".window").width();
+    }
+    //关闭窗口的方法
+    function closeWindow() {
+        $(".close_btn").click(function () {
+            $('.window').hide("slow");
+            $('.mask').css('display', 'none');
+        });
+        $(".cancel").click(function () {
+            $('.window').hide("slow");
+            $('.mask').css('display', 'none');
+        })
+    }
+
+    //添加按钮点击事件
+    function addrole() {
+        $("#add").click(function () {
+            var rolename = $("#jsmc").val();
+            if ($("#jsmc").val() == "")
+            {
+                $('#jsmc').attr('placeholder','此项不能为空').css('color','red')
+            }else{
+                $('#jsmc').css('color','black')
+                $.ajax({
+                    url:"../addrole",
+                    type : "post",//请求方式
+                    data: {"rolename": rolename},
+                    dataType : "text",//数据格式
+                    async:false,
+                    success:function (data) {
+                        if(data=="yes")
+                        {
+                            alert("角色添加成功！！");
+                            $('.window').hide("slow");
+                            $('.mask').css('display', 'none');
+                        }
+                        else
+                        {
+                            alert("角色添加失败！！");
+                        }
+                    },
+                    error:function () {
+                        alert("角色添加出错了！");
+                    }
+                })
+            }
+
+
+        })
+    }
+    //定义弹出居中窗口的方法
+    function popCenterWindow() {
+        init();
+        //计算弹出窗口的左上角X的偏移量
+        var popX = (windowWidth - popWidth) / 2;
+        // 计算弹出窗口的左上角Y的偏移量为窗口的高度 - 弹窗高度 / 2 + 被卷去的页面的top
+        var popY = (windowHeight - popHeight) / 2 + $(document).scrollTop();
+        //设定窗口的位置
+        $("#center").css("top", popY).css("left", popX).slideToggle("fast");
+        addrole();
+        closeWindow();
+
+    }
+</script>
+<body>
+<div align="center">
+    <h2>角色管理</h2>
+    <button class='btn btn-success' id = "btn_addrole" >角色添加</button>
+</div>
+
+<div align="center">
+      请选择角色:
+    <select id = "role" onchange="qxxs()">
+        <option>注册用户</option>
+        <option>部门审核员</option>
+        <option>管理员</option>
+        <option>形式审核员</option>
+    </select>
+</div>
+<div align="center" id = "show" style="padding-top: 20px">
+
+</div>
+<div class="mask"> </div>
+<div class="window" id="center">
+    <div class="border_add_nav">
+        <div> </div>
+        <div class="border_add_nav_box flex-container">
+            <span class="add_title">角色添加</span>
+            <span class="close_btn">X</span>
+        </div>
+    </div>
+    <div class="border_add_main_content">
+        <div class="border_add_main_content_box">
+            <span class="name">角色名称：</span>
+            <input class="input" type="text" id = "jsmc" placeholder="默认状态是开启">
+        </div>
+
+    </div>
+    <div class="border_add_btn_box">
+        <div class="pull-right" style="float:right;">
+            <div class="cancel">取消</div>
+            <div class="save" id = "add">添加</div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

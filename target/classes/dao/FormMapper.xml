@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.FormMapper">
+    <select id="check_added" resultType="Boolean" parameterType="map">
+        select count(1) from form where jgmc = #{inst} ;
+    </select>
+
+    <select id="check_name" parameterType="String" resultType="Boolean">
+        select count(1) from users where username = #{username};
+    </select>
+
+    <select id="check_instcode" parameterType="String" resultType="Boolean">
+        select count(1) from users where instcode = #{instcode};
+    </select>
+
+    <select id="check_inst" parameterType="String" resultType="Boolean">
+        select count(1) from users where inst = #{inst};
+    </select>
+
+    <insert id="addform" parameterType="map">
+        insert into form(code,status,jgmc,txdz,dwwz,dzyx,frdb,em,lxr,gd,sj,cz,jgsx,jgjj,jsxq,qsxqnf,jzxqnf,xqgs,gjz,yjlx,xkfl,xqjsssly,xqjsyyhy,jsxqhzms,szdy,ntrzj)  values (#{code},#{status},#{jgmc},#{txdx},#{dwwz},#{dzxx},#{frdb},#{em},#{lxr},#{gd},#{sj},#{cz},#{jgsx},#{jgjj},#{jsxq},#{qsxqnf},#{jzxqnf},#{xqgs},#{gjz},#{yjlx},#{xkfl},#{xqjsssly},#{xqjsyyhy},#{jsxqhzms},#{szdy},#{ntrzj});
+    </insert>
+
+    <select id="getformBybm" parameterType="String" resultType="POJO.Form">
+        select * from form where glcs = #{bm};
+    </select>
+
+    <select id="getformByinst" parameterType="String" resultType="POJO.Form">
+        select * from form where jgmc = #{inst};
+    </select>
+
+    <select id="getformBycode" parameterType="String" resultType="POJO.Form">
+        select * from form where code = #{code};
+    </select>
+
+    <select id="getAllform"  resultType="POJO.Form">
+        select * from form ;
+    </select>
+
+    <update id="role_permissioncode" parameterType="map">
+    update role set permissioncode  = #{permissioncode} where role = #{role};
+</update>
+
+<select id="getform_tocheck" resultType="POJO.Form">
+     select * from form where status = 0;
+</select>
+
+<select id="Fuzzy_query"  resultType="POJO.Form">
+select * from form
+<where>
+<if test="jgmc != null and jgmc!='' ">
+and jgmc = #{jgmc}
+</if>
+<if test="szdy != null and szdy!=''">
+and szdy = #{szdy}
+</if>
+<if test="lxr != null and lxr!=''">
+and lxr = #{lxr}
+</if>
+<if test="gjz != null and gjz!=''">
+and gjz like "%"#{gjz}"%"
+</if>
+<if test="yjlx != null and yjlx!=''">
+and yjlx = #{yjlx}
+</if>
+<if test="ntrzj != null and ntrzj!=''">
+and ntrzj = #{ntrzj}
+</if>
+</where>
+</select>
+
+<select id="Tj_search_jgsx"   resultType="map">
+select jgsx as jgsx,count(*) as counts  from form GROUP BY jgsx;
+</select>
+<select id="Tj_search_szdy"   resultType="map">
+select szdy as szdy,count(*) as counts  from form GROUP BY szdy;
+</select>
+<select id="Tj_search_yjlx"   resultType="map">
+select yjlx as yjlx,count(*) as counts  from form GROUP BY yjlx;
+</select>
+
+<update id="xssh_agree" parameterType="map">
+update form set status = 1,glcs = #{glcs},xsshyj=#{xsshyj}  where code = #{code};
+</update>
+
+<update id="xssh_disagree" parameterType="map">
+update form set status = 2,xsshyj=#{xsshyj}  where code = #{code};
+</update>
+<update id="bmsh_agree" parameterType="map">
+update form set status = 3,bmshyj=#{bmshyj}  where code = #{code};
+</update>
+
+<update id="bmsh_disagree" parameterType="map">
+update form set status = 4,bmshyj=#{bmshyj}  where code = #{code};
+</update>
+
+<insert id="add_permission" parameterType="map">
+insert into permission(permission_name,permission_status,qxsm) values (#{qxmc},#{status},#{qxsm});
+</insert>
+
+<delete id="delete_permission" parameterType="map">
+delete from permission where id = #{id};
+</delete>
+
+<delete id="delete_form" parameterType="map">
+delete from form where code = #{code};
+</delete>
+
+<update id="status_permission" parameterType="map">
+update permission set permission_status  = #{status}  where id = #{id} ;
+</update>
+
+<select id="general_inquiry" parameterType="string" resultType="POJO.Form">
+select * from form where ${sql};
+</select>
+
+<select id="TopN_ip" parameterType="string" resultType="java.util.Map">
+select * from cleanedtopn order by counts Desc LIMIT 0, ${N};
+</select>
+
+<select id="TopN_traffic" parameterType="string" resultType="java.util.Map">
+select * from traffictopn order by counts Desc LIMIT 0, ${N};
+</select>
+
+<select id="TopN_type" parameterType="string" resultType="java.util.Map">
+select types as types,count(*) as counts  from dataclean GROUP BY types;
+</select>
+
+</mapper>

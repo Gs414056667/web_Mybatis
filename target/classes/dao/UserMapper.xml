@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.UserMapper">
+    <select id="login" resultType="POJO.Users" parameterType="map">
+        select * from users where username = #{username} and password = #{password};
+    </select>
+
+    <insert id="register" parameterType="map">
+        insert into users(inst,username,password,status,permission,job,em,instcode) values (#{inst},#{username},#{password},#{status},#{permission},#{job},#{em},#{instcode});
+    </insert>
+
+    <update id="updatepsw" parameterType="map">
+    update users set password=#{psw} where username=#{username};
+</update>
+
+<select id="getAlluser" resultType="POJO.Users">
+    select * from users where job = "形式审核员" or job = "注册用户" or job = "部门审核员";
+</select>
+
+    <update id="updatestatus" parameterType="map">
+     update users set Status= #{status} where username=#{username};
+</update>
+
+<select id="getpermissioncode" parameterType="string" resultType="string">
+      select permissioncode from role where role = #{role};
+</select>
+
+<update id="updaterole" parameterType="map" >
+    update users set job = #{role} , permissioncode = #{permissioncode} where username = #{username};
+</update>
+<update id="updaterolepermissioncode" parameterType="map">
+update users set permissioncode  =#{permissioncode}  where job = #{role} ;
+</update>
+
+<insert id="addrole" parameterType="string">
+        insert into role(role) values (#{rolename});
+</insert>
+
+<select id="getAllpermission" resultType="POJO.Permission">
+    select * from permission ;
+</select>
+
+</mapper>

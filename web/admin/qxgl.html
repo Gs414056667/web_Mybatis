@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>权限管理</title>
+    <link rel="stylesheet" href="../css/tk.css" id="theme-stylesheet">
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!--    <link rel="stylesheet" href="bootstrap/bootstrap.min.css">-->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.2.1/bootstrap.min.js"></script>
+</head>
+<style>
+    body
+    {
+        margin:0;padding:0;background:url(../resource/img/background.png);
+    }
+</style>
+<script>
+    function deletepermission(id){
+        var r = confirm("确定删除此权限吗？");
+        if(r==true) {
+            $.ajax({
+                url: "../delete_permission",
+                type: "POST",
+                data: {"id": id},
+                dataType: "text",
+                async: false,
+                success: function (data) {
+                    if (data == "yes") {
+                        alert("删除权限成功！");
+                    } else
+                        alert("删除权限失败！");
+                },
+                error: function (e) {
+                    alert("删除权限出现错误！！");
+                }
+            })
+        }else
+            return ;
+    }
+    function close_status(id){
+        var r = confirm("确定关闭此权限吗？");
+        if(r==true) {
+            $.ajax({
+                url: "../status_permission",
+                type: "POST",
+                data: {"id": id,"status":"1"},
+                dataType: "text",
+                async: false,
+                success: function (data) {
+                    if (data == "yes") {
+                        alert("关闭权限成功！");
+                    } else
+                        alert("关闭权限失败！");
+                },
+                error: function (e) {
+                    alert("关闭权限出现错误！！");
+                }
+            })
+        }else
+            return ;
+    }
+    function open_status(id){
+        var r = confirm("确定开启此权限吗？");
+        if(r==true) {
+            $.ajax({
+                url: "../status_permission",
+                type: "POST",
+                data: {"id": id,"status":"0"},
+                dataType: "text",
+                async: false,
+                success: function (data) {
+                    if (data == "yes") {
+                        alert("开启权限成功！");
+                    } else
+                        alert("开启权限失败！");
+                },
+                error: function (e) {
+                    alert("开启权限出现错误！！");
+                }
+            })
+        }else
+            return ;
+    }
+    $(function () {
+        $.ajax({
+            url:"../getAllpermission",
+            type : "post",//请求方式
+            dataType : "json",//数据格式
+            async:true,
+            success:function (data) {
+                var text = "<table class=\"table table-striped\" style=\"width: 900px ; border:1px #6c757d dashed \"><thead><tr><th>权限编号</th><th>权限名称</th><th>权限状态</th><th  align='center'>操作1</th><th  align='center'>操作2</th></tr></thead>";
+                for (i=0;i<data.length;i++) {
+                    var status = "";
+                    if(data[i].permission_status == 1)
+                        status = "权限开启";
+                    else if (data[i].permission_status == 0)
+                        status = "权限关闭";
+                    text+="<tr>";
+                    text+="<td>"+data[i].id+"</td>" +
+                        "<td>"+data[i].permission_name+"</td>" +
+                        "<td>"+status+"</td>" ;
+
+                    if(data[i].permission_status==1)
+                        text+="<td><button class='btn btn-default' onclick='close_status(this.value)' value='"+data[i].id+"'>关闭权限</button></td>" ;
+                    if(data[i].permission_status==0)
+                        text+="<td><button class='btn btn-success' onclick='open_status(this.value)' value='"+data[i].id+"'>开启权限</button></td>" ;
+
+                    text+="<td><button class='btn btn-danger' onclick='deletepermission(this.value)' value='"+data[i].id+"'>删除权限</button></td>" +
+                        "</tr>";
+                }
+                text+="</table>";
+                $("#show").html(text);
+            },
+            error:function (e) {
+                alert("获取权限出错了！");
+            }
+        })
+
+    });
+</script>
+<script type="text/javascript">
+    $(window).ready(function () {
+        $("#btn_addpermission").click(function () {
+            $('.mask').css('display', 'block');
+            $('.mask').css('width', $(window).width())
+            $('.mask').css('height', $(document).height())
+            popCenterWindow();
+        });
+    });
+    //获取窗口的高度
+    var windowHeight;
+    //获取窗口的宽度
+    var windowWidth;
+    //获取弹窗的宽度
+    var popWidth;
+    //获取弹窗高度
+    var popHeight;
+
+    function init() {
+        windowHeight = $(window).height();
+        windowWidth = $(window).width();
+        popHeight = $(".window").height();
+        popWidth = $(".window").width();
+    }
+    //关闭窗口的方法
+    function closeWindow() {
+        $(".close_btn").click(function () {
+            $('.window').hide("slow");
+            $('.mask').css('display', 'none');
+        });
+        $(".cancel").click(function () {
+            $('.window').hide("slow");
+            $('.mask').css('display', 'none');
+        })
+    }
+
+    //添加按钮点击事件
+    function add_permission() {
+        $("#add").click(function () {
+            var qxmc = $("#qxmc").val();
+            var qxsm = $("#qxsm").val();
+            $.ajax({
+                url:"../add_permission",
+                type: "POST",
+                data: {"qxmc": qxmc,"qxsm":qxsm},
+                dataType: "text",
+                async: false,
+                success: function (data) {
+                    if(data=="yes"){
+                        alert("添加权限成功！");
+                        $('.window').hide("slow");
+                        $('.mask').css('display', 'none');
+                    }
+
+                    else
+                        alert("添加失败！");
+                },
+                error: function (e) {
+                    alert("添加权限出现错误！！");
+                }
+            });
+        })
+    }
+    //定义弹出居中窗口的方法
+    function popCenterWindow() {
+        init();
+        //计算弹出窗口的左上角X的偏移量
+        var popX = (windowWidth - popWidth) / 2;
+        // 计算弹出窗口的左上角Y的偏移量为窗口的高度 - 弹窗高度 / 2 + 被卷去的页面的top
+        var popY = (windowHeight - popHeight) / 2 + $(document).scrollTop();
+        //设定窗口的位置
+        $("#center").css("top", popY).css("left", popX).slideToggle("fast");
+        add_permission();
+        closeWindow();
+
+    }
+</script>
+<body>
+<div align="center">
+    <h2>权限管理</h2>
+    <button class='btn btn-success' id = "btn_addpermission" >权限添加</button>
+</div>
+<div align="center" id = "show" style="padding-top: 30px">
+
+</div>
+
+
+<div class="mask"></div>
+<div class="window" id="center">
+    <div class="border_add_nav">
+        <div> </div>
+        <div class="border_add_nav_box flex-container">
+            <span class="add_title">权限添加</span>
+            <span class="close_btn">X</span>
+        </div>
+    </div>
+    <div class="border_add_main_content">
+        <div class="border_add_main_content_box">
+            <span class="name">权限名称：</span>
+            <input class="input" type="text" id = "qxmc" placeholder="默认状态是开启">
+        </div>
+        <div class="border_add_main_content_box">
+            <span class="name">权限说明：</span>
+            <input class="input" type="text" id = "qxsm" >
+        </div>
+    </div>
+    <div class="border_add_btn_box">
+        <div class="pull-right" style="float:right;">
+            <div class="cancel">取消</div>
+            <div class="save" id = "add">添加</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

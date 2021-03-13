@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>河北省重大技术征集系统</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="all,follow">
+    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/4.2.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet">
+</head>
+
+<body>
+<div class="page login-page">
+    <div class="container d-flex align-items-center">
+        <div class="form-holder has-shadow">
+            <div class="row">
+
+                <!-- Logo & Information Panel-->
+                <div class="col-lg-6">
+                    <div class="info d-flex align-items-center">
+                        <div class="content">
+                            <div class="logo">
+                                <h1>欢迎登录</h1>
+                            </div>
+                            <p>河北省科技信息通用调查系统</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Panel    -->
+                <div class="col-lg-6 bg-white">
+                    <div class="form d-flex align-items-center">
+                        <div class="content">
+                            <div class="form-group">
+                                <input id="login-username" type="text" name="userName" required data-msg="请输入用户名" placeholder="用户名" value="" class="input-material">
+                            </div>
+                            <div class="form-group">
+                                <input id="login-password" type="password" name="passWord" required data-msg="请输入密码" placeholder="密码" class="input-material">
+                            </div>
+                            <button id="login" type="button" class="btn btn-primary">登录</button>
+                            <div style="margin-top: -20px;">
+                                <div class="custom-control custom-checkbox " style="float: right;">
+                                    <input type="checkbox" class="custom-control-input" id="check1" >
+                                    <label class="custom-control-label" for="check1">记住密码&nbsp;&nbsp;</label>
+                                </div>
+                            </div>
+                            <br />
+                            <small>没有账号?</small><a href="register.html" class="signup">&nbsp;注册</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- JavaScript files-->
+<!--    <script src="https://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>-->
+<script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.2.1/bootstrap.min.js"></script>
+<script src="vendor/jquery-validation/jquery.validate.min.js"></script><!--表单验证-->
+<!-- Main File-->
+<script src="js/front.js"></script>
+
+<script>
+    $(function(){
+        //登录！！
+        $("#login").click(function () {
+            var userName = $("#login-username").val();
+            var passWord = $("#login-password").val();
+            if(userName==""||passWord=="")
+            {
+                alert("请将信息填写完整！");
+                return;
+            }
+            $.ajax({
+                url: "login",
+                data: {"username": userName, "password": passWord},//前面命名，后面是值
+                type: "POST",
+                dataType: "JSON",
+                success: function (s) {
+                    if (s.status == 0) {
+                        alert("该账号已经停用！");
+                    } else if (s.username == "null") {
+                        alert("用户名或者密码错误！");
+                    }else {
+                        alert("登录成功！！！");
+                        if(s.job=="注册用户"){
+                            localStorage.setItem("inst", s.inst);
+                            localStorage.setItem("em", s.em);
+                            localStorage.setItem("username",s.username);
+                            localStorage.setItem("permissioncode",s.permissioncode);
+                            location.href = "user/user.html";
+                        }else if(s.job=="形式审核员")
+                        {
+                            localStorage.setItem("job", s.job);
+                            localStorage.setItem("username",s.username);
+                            localStorage.setItem("inst",s.inst);
+                            localStorage.setItem("permissioncode",s.permissioncode);
+                            location.href = "shenhe/shenhe.html";
+                        }
+                        else if(s.job=="部门审核员")
+                        {
+                            localStorage.setItem("job", s.job);
+                            localStorage.setItem("username",s.username);
+                            localStorage.setItem("inst",s.inst);
+                            localStorage.setItem("permissioncode",s.permissioncode);
+                            location.href = "shenhe/shenhe.html";
+                        }
+                        else if(s.job=="管理员")
+                        {
+                            localStorage.setItem("job", s.job);
+                            localStorage.setItem("username",s.username);
+                            localStorage.setItem("permissioncode",s.permissioncode);
+                            location.href = "admin/admin.html";
+                        }
+                    }
+                },
+                error: function (e) {
+                    console.log(e);
+                    alert("出错了！")
+                }
+            });
+        });
+    });
+</script>
+
+
+</body>
+</html>
